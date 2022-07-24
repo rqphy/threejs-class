@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 
 /**
  * Base
@@ -19,7 +20,6 @@ dracoLoader.setDecoderPath('/draco/')
 
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
-
 
 // Objects
 
@@ -110,6 +110,18 @@ camera.position.y = 0
 camera.position.z = 4
 scene.add(camera)
 
+const animateCamera = (position) =>
+{
+    new TWEEN.Tween(camera.position)
+        .to(position, 1800)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start()
+        .onComplete(function ()
+        {
+            TWEEN.remove(this)
+        })
+}
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
@@ -150,6 +162,9 @@ const tick = () =>
     {
         mixer.update(deltaTime)
     }
+
+    // Update TWEEN
+    TWEEN.update()
 
     // Update controls
     controls.update()

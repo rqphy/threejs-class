@@ -31,8 +31,15 @@ const sphere = new THREE.Mesh(sphereGeometry, material)
 sphere.position.x = 1
 sphere.position.y = 1
 
+// Torus
+const torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 16, 50, 4)
 
-scene.add(baseObject, sphere)
+const torus = new THREE.Mesh(torusGeometry, material)
+torus.position.x = 1
+torus.position.y = -1
+
+
+scene.add(baseObject, sphere, torus)
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
@@ -104,6 +111,8 @@ const tick = () =>
 
     sphere.rotation.y = 0.2 * elapsedTime
     sphere.rotation.z = -0.2 * elapsedTime
+
+    torus.rotation.z = -0.2 * elapsedTime
 
     // Update controls
     controls.update()

@@ -13,6 +13,7 @@ const scene = new THREE.Scene()
 
 // Objects
 
+// BaseObject
 const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshBasicMaterial({
     color: 0x00ffff,
@@ -20,8 +21,18 @@ const material = new THREE.MeshBasicMaterial({
 })
 
 const baseObject = new THREE.Mesh(geometry, material)
+baseObject.position.x = -1
+baseObject.position.y = 1
 
-scene.add(baseObject)
+// Sphere
+const sphereGeometry = new THREE.SphereGeometry(0.6, 16, 8)
+
+const sphere = new THREE.Mesh(sphereGeometry, material)
+sphere.position.x = 1
+sphere.position.y = 1
+
+
+scene.add(baseObject, sphere)
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
@@ -85,8 +96,14 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // Animation
+
     baseObject.rotation.y = 0.2 * elapsedTime
     baseObject.rotation.z = 0.2 * elapsedTime
+
+    sphere.rotation.y = 0.2 * elapsedTime
+    sphere.rotation.z = -0.2 * elapsedTime
 
     // Update controls
     controls.update()

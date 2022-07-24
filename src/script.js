@@ -1,5 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 /**
@@ -10,6 +12,14 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+// Loaders
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco/')
+
+const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
+
 
 // Objects
 
@@ -37,6 +47,29 @@ const torusGeometry = new THREE.TorusGeometry(0.5, 0.2, 16, 50, 4)
 const torus = new THREE.Mesh(torusGeometry, material)
 torus.position.x = 1
 torus.position.y = -1
+
+let mixer = null
+
+gltfLoader.load(
+    '/model/Fox/glTF/Fox.gltf',
+    (gltf) =>
+    {
+        // const children = [...gltf.scene.children]
+        // for(const child of children)
+        // {
+        //     scene.add(child)
+        // }
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[2])
+        
+        action.play()
+
+        gltf.scene.scale.set(0.015, 0.015, 0.015)
+        gltf.scene.rotateY(-0.3)
+        gltf.scene.position.set(-1, -1, 0.025)
+        scene.add(gltf.scene)
+    }
+)
 
 
 scene.add(baseObject, sphere, torus)
@@ -90,7 +123,7 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -99,10 +132,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
+let previousTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
 
     // Animation
 
@@ -113,6 +149,12 @@ const tick = () =>
     sphere.rotation.z = -0.2 * elapsedTime
 
     torus.rotation.z = -0.2 * elapsedTime
+
+    // Update mixer
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
 
     // Update controls
     controls.update()

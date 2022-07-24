@@ -54,11 +54,6 @@ gltfLoader.load(
     '/model/Fox/glTF/Fox.gltf',
     (gltf) =>
     {
-        // const children = [...gltf.scene.children]
-        // for(const child of children)
-        // {
-        //     scene.add(child)
-        // }
         mixer = new THREE.AnimationMixer(gltf.scene)
         const action = mixer.clipAction(gltf.animations[2])
         

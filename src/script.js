@@ -122,6 +122,15 @@ const animateCamera = (position) =>
         })
 }
 
+window.addEventListener('click',() =>
+{
+    animateCamera({
+        x : -5.193833711541049,
+        y : 1.4644913989102093,
+        z : -3.1130141339266837
+    })
+})
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
